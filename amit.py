@@ -32,15 +32,67 @@ st.markdown("""
         color: #eaeaf5;
     }
 
-    .hero {
-        padding: 2.2rem 2rem;
-        border-radius: 20px;
-        background: linear-gradient(120deg, #ff4d6d 0%, #7b2ff7 50%, #2b1055 100%);
-        box-shadow: 0 10px 40px rgba(123, 47, 247, 0.35);
-        margin-bottom: 1.6rem;
+    /* ---------- Top navbar (Netflix/Prime style) ---------- */
+    .navbar-wrap {
+        display: flex;
+        align-items: center;
+        margin-top: 0.2rem;
     }
-    .hero h1 { font-size: 2.6rem; font-weight: 800; margin: 0; color: white; letter-spacing: -0.5px; }
-    .hero p { color: rgba(255,255,255,0.85); font-size: 1.05rem; margin-top: 0.4rem; }
+    .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-top: 6px;
+    }
+    .nav-logo {
+        font-size: 1.9rem;
+        line-height: 1;
+        filter: drop-shadow(0 0 8px rgba(255,77,109,0.6));
+    }
+    .nav-brand-text {
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(90deg, #ff4d6d, #ffb703, #7b2ff7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .navbar-underline {
+        height: 3px;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #ff4d6d, #ffb703, #7b2ff7, #2ec4b6);
+        margin: 0.6rem 0 1.6rem 0;
+        opacity: 0.85;
+    }
+
+    /* nav buttons in the header (keys start with nav_) — uniform size/shape */
+    div[class*="st-key-nav_"] {
+        height: 56px;
+    }
+    div[class*="st-key-nav_"] button {
+        background: rgba(255,255,255,0.03) !important;
+        box-shadow: none !important;
+        border: 1px solid rgba(255,255,255,0.16) !important;
+        color: #cfcfe8 !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        border-radius: 14px !important;
+        height: 56px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    div[class*="st-key-nav_"] button:hover {
+        border-color: rgba(255,77,109,0.5) !important;
+        color: #ffffff !important;
+    }
+    div[class*="st-key-nav_"] button[kind="primary"] {
+        background: linear-gradient(90deg, #ff4d6d, #7b2ff7) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 6px 18px rgba(255,77,109,0.35) !important;
+    }
+
 
     div[data-testid="stMetric"] {
         background: rgba(255,255,255,0.05);
@@ -267,6 +319,7 @@ defaults = {
     "home_count": 12,
     "reco_count": 8,
     "last_recommended_for": None,
+    "active_tab": "discover",
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -279,6 +332,12 @@ def go_to_detail(row_id):
 
 
 def go_home():
+    st.session_state.view = "home"
+    st.session_state.selected_row_id = None
+
+
+def go_to_tab(tab_key):
+    st.session_state.active_tab = tab_key
     st.session_state.view = "home"
     st.session_state.selected_row_id = None
 
@@ -331,25 +390,46 @@ def grid(items, is_recommendation=False, cols=4, key_prefix="grid"):
 
 
 # =====================================================================
-#  HERO HEADER
+#  TOP HEADER (brand left, nav buttons right — like a real app header)
 # =====================================================================
-st.markdown("""
-<div class="hero">
-    <h1>🎬 CineMatch</h1>
-    <p>Your personal content-based movie recommendation dashboard by TF-IDF & cosine similarity on the TMDB 5000 dataset.</p>
-</div>
-""", unsafe_allow_html=True)
+_on_home = st.session_state.view == "home"
 
-# =====================================================================
-#  TOP-LEVEL METRICS (always visible)
-# =====================================================================
-m1, m2, m3, m4 = st.columns(4)
-m1.metric("🎞️ Movies in library", f"{len(movies_data):,}")
-m2.metric("⭐ Average rating", f"{movies_data['vote_average'].mean():.2f}")
-valid_years = movies_data["year"].dropna()
-m3.metric("📅 Year range", f"{int(valid_years.min())}–{int(valid_years.max())}")
-m4.metric("🖼️ With posters", f"{movies_data['poster'].notna().sum():,}")
-st.write("")
+st.markdown('<div class="navbar-wrap">', unsafe_allow_html=True)
+head_brand, head_nav1, head_nav2, head_nav3 = st.columns([2.6, 1, 1, 1])
+
+with head_brand:
+    st.markdown(
+        '<div class="nav-brand">'
+        '<span class="nav-logo">🎬</span>'
+        '<span class="nav-brand-text">CineMatch</span>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+with head_nav1:
+    active = _on_home and st.session_state.active_tab == "discover"
+    if st.button("🏠︎ Home", key="nav_discover", use_container_width=True,
+                 type="primary" if active else "secondary"):
+        go_to_tab("discover")
+        st.rerun()
+
+with head_nav2:
+    active = _on_home and st.session_state.active_tab == "recommend"
+    if st.button("🔍︎ Search", key="nav_recommend", use_container_width=True,
+                 type="primary" if active else "secondary"):
+        go_to_tab("recommend")
+        st.rerun()
+
+with head_nav3:
+    active = _on_home and st.session_state.active_tab == "analytics"
+    if st.button("📈 Analytics", key="nav_analytics", use_container_width=True,
+                 type="primary" if active else "secondary"):
+        go_to_tab("analytics")
+        st.rerun()
+
+st.markdown('</div><div class="navbar-underline"></div>', unsafe_allow_html=True)
+
+
 
 # =====================================================================
 #  SIDEBAR FILTERS
@@ -365,7 +445,7 @@ with st.sidebar:
 
     st.markdown("---")
     if st.session_state.view == "detail":
-        if st.button("Home Page"):
+        if st.button("🏠 Back to Home"):
             go_home()
             st.rerun()
     st.markdown("---")
@@ -424,12 +504,12 @@ def render_detail_page():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title"> More Like This</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">🎯 More Like This</div>', unsafe_allow_html=True)
     recs = recommend_by_row_id(row_id, top_n=8)
     valid_recs = [(m, s) for m, s in recs if passes_filters(m, min_rating, year_range, selected_genres)]
 
     if not valid_recs:
-        st.info("No similar movies match your current sidebar filters, try loosening them.")
+        st.info("No similar movies match your current sidebar filters — try loosening them.")
     else:
         grid(valid_recs, is_recommendation=True, cols=4, key_prefix=f"detail_{row_id}")
 
@@ -438,16 +518,14 @@ def render_detail_page():
 #  HOME PAGE
 # =====================================================================
 def render_home_page():
-    tab_discover, tab_recommend, tab_analytics = st.tabs(
-        ["🏠 Home", "🔍 Search", "📊 Analytics"]
-    )
+    active_tab = st.session_state.active_tab
 
-    # ---------------- TAB 1 — DISCOVER (random movies) ----------------
-    with tab_discover:
+    # ---------------- DISCOVER (random movies) ----------------
+    if active_tab == "discover":
         top_row = st.columns([3, 1, 1])
         with top_row[0]:
-            st.subheader("🎞️ Trending Now")
-            st.caption("Handpicked movie recommendations based on similar genres, cast, and storylines")
+            st.subheader("🎲 Discover Movies")
+            st.caption("A fresh, random shuffle of the library. Click any poster's **View Details** to open its full page.")
         with top_row[1]:
             st.write("")
             if st.button("🔀 Shuffle"):
@@ -478,12 +556,12 @@ def render_home_page():
             if len(shuffled) > len(visible):
                 _, mid_col, _ = st.columns([2, 1, 2])
                 with mid_col:
-                    if st.button("⬇️ See More Movies"):
+                    if st.button("⬇️ Load More Movies"):
                         st.session_state.home_count += 12
                         st.rerun()
 
-    # ---------------- TAB 2 — RECOMMEND ----------------
-    with tab_recommend:
+    # ---------------- RECOMMEND ----------------
+    elif active_tab == "recommend":
         st.subheader("🎯 Find movies similar to your favorite")
 
         c1, c2 = st.columns([3, 1])
@@ -507,10 +585,10 @@ def render_home_page():
             result = recommend_by_title(active_movie, top_n=max(st.session_state.reco_count, 20))
 
             if result is None:
-                st.error("Movie not found ❌ try a different title.")
+                st.error("Movie not found ❌ — try a different title.")
             else:
                 matched_movie, recommendations = result
-                st.success(f"Movies similar to **{matched_movie}** ")
+                st.success(f"Movies similar to **{matched_movie}** 🎉")
 
                 valid_movies = [
                     (m, s) for m, s in recommendations
@@ -532,8 +610,8 @@ def render_home_page():
         else:
             st.info("👆 Pick a movie above and hit **Recommend** to see similar titles.")
 
-    # ---------------- TAB 3 — ANALYTICS ----------------
-    with tab_analytics:
+    # ---------------- ANALYTICS ----------------
+    elif active_tab == "analytics":
         st.subheader("📊 Dataset Analytics")
 
         genre_counts = pd.Series(" ".join(movies_data["genres"]).split()).value_counts().head(15)
