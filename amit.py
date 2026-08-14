@@ -336,7 +336,7 @@ def grid(items, is_recommendation=False, cols=4, key_prefix="grid"):
 st.markdown("""
 <div class="hero">
     <h1>🎬 CineMatch</h1>
-    <p>Your personal content-based movie recommendation dashboard — powered by TF-IDF & cosine similarity on the TMDB 5000 dataset.</p>
+    <p>Your personal content-based movie recommendation dashboard by TF-IDF & cosine similarity on the TMDB 5000 dataset.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -365,7 +365,7 @@ with st.sidebar:
 
     st.markdown("---")
     if st.session_state.view == "detail":
-        if st.button("🏠 Back to Home"):
+        if st.button("Home Page"):
             go_home()
             st.rerun()
     st.markdown("---")
@@ -424,12 +424,12 @@ def render_detail_page():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">🎯 More Like This</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title"> More Like This</div>', unsafe_allow_html=True)
     recs = recommend_by_row_id(row_id, top_n=8)
     valid_recs = [(m, s) for m, s in recs if passes_filters(m, min_rating, year_range, selected_genres)]
 
     if not valid_recs:
-        st.info("No similar movies match your current sidebar filters — try loosening them.")
+        st.info("No similar movies match your current sidebar filters, try loosening them.")
     else:
         grid(valid_recs, is_recommendation=True, cols=4, key_prefix=f"detail_{row_id}")
 
@@ -439,15 +439,15 @@ def render_detail_page():
 # =====================================================================
 def render_home_page():
     tab_discover, tab_recommend, tab_analytics = st.tabs(
-        ["🎲 Discover", "🎯 Get Recommendations", "📊 Analytics"]
+        ["🏠 Home", "🔍 Search", "📊 Analytics"]
     )
 
     # ---------------- TAB 1 — DISCOVER (random movies) ----------------
     with tab_discover:
         top_row = st.columns([3, 1, 1])
         with top_row[0]:
-            st.subheader("🎲 Discover Movies")
-            st.caption("A fresh, random shuffle of the library. Click any poster's **View Details** to open its full page.")
+            st.subheader("🎞️ Trending Now")
+            st.caption("Handpicked movie recommendations based on similar genres, cast, and storylines")
         with top_row[1]:
             st.write("")
             if st.button("🔀 Shuffle"):
@@ -478,7 +478,7 @@ def render_home_page():
             if len(shuffled) > len(visible):
                 _, mid_col, _ = st.columns([2, 1, 2])
                 with mid_col:
-                    if st.button("⬇️ Load More Movies"):
+                    if st.button("⬇️ See More Movies"):
                         st.session_state.home_count += 12
                         st.rerun()
 
@@ -507,10 +507,10 @@ def render_home_page():
             result = recommend_by_title(active_movie, top_n=max(st.session_state.reco_count, 20))
 
             if result is None:
-                st.error("Movie not found ❌ — try a different title.")
+                st.error("Movie not found ❌ try a different title.")
             else:
                 matched_movie, recommendations = result
-                st.success(f"Movies similar to **{matched_movie}** 🎉")
+                st.success(f"Movies similar to **{matched_movie}** ")
 
                 valid_movies = [
                     (m, s) for m, s in recommendations
