@@ -524,17 +524,17 @@ def render_home_page():
     if active_tab == "discover":
         top_row = st.columns([3, 1, 1])
         with top_row[0]:
-            st.subheader("🎲 Discover Movies")
-            st.caption("A fresh, random shuffle of the library. Click any poster's **View Details** to open its full page.")
+            st.subheader("🎥 Trending Movies")
+            st.caption("Discover the most popular and highly rated movies loved by audiences worldwide")
         with top_row[1]:
             st.write("")
-            if st.button("🔀 Shuffle"):
+            if st.button("🎥 Discover"):
                 st.session_state.home_shuffle_seed = random.randint(0, 999999)
                 st.session_state.home_count = 12
                 st.rerun()
         with top_row[2]:
             st.write("")
-            surprise = st.button("🎁 Surprise Me")
+            surprise = st.button("Watch Something")
 
         pool = movies_data[
             movies_data.apply(lambda r: passes_filters(r, min_rating, year_range, selected_genres), axis=1)
@@ -562,7 +562,7 @@ def render_home_page():
 
     # ---------------- RECOMMEND ----------------
     elif active_tab == "recommend":
-        st.subheader("🎯 Find movies similar to your favorite")
+        st.subheader("🎞️ Find movies similar to your favorite")
 
         c1, c2 = st.columns([3, 1])
         with c1:
@@ -573,7 +573,7 @@ def render_home_page():
         with c2:
             st.write("")
             st.write("")
-            go = st.button("🔍 Recommend", use_container_width=True)
+            go = st.button("🔍 Search", use_container_width=True)
 
         if go and movie_name:
             st.session_state.last_recommended_for = movie_name
@@ -585,7 +585,7 @@ def render_home_page():
             result = recommend_by_title(active_movie, top_n=max(st.session_state.reco_count, 20))
 
             if result is None:
-                st.error("Movie not found ❌ — try a different title.")
+                st.error("Movie not found ❌ try a different title.")
             else:
                 matched_movie, recommendations = result
                 st.success(f"Movies similar to **{matched_movie}** 🎉")
@@ -612,7 +612,7 @@ def render_home_page():
 
     # ---------------- ANALYTICS ----------------
     elif active_tab == "analytics":
-        st.subheader("📊 Dataset Analytics")
+        st.subheader("📊 Movie Insights")
 
         genre_counts = pd.Series(" ".join(movies_data["genres"]).split()).value_counts().head(15)
         fig_genre = px.bar(
