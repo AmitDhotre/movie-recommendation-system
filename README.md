@@ -1,27 +1,27 @@
-# 🎬 Movie Recommendation System
+# CineMatch: Movie Recommendation System
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-WebApp-red)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Recommendation-green)
 
-## 📌 Project Overview
+## Project Overview
 
 This project is a Content-Based Movie Recommendation System that suggests movies similar to a user's selected movie using Machine Learning techniques.
 
 The system analyzes movie metadata such as genres, keywords, cast, crew, and overview to find similar movies and provide personalized recommendations.
 
-## 🚀 Features
+## Features
 
-- 🎥 Movie Recommendation Engine
-- 📊 Similarity Score Calculation
-- 🖼️ Movie Poster Display
-- ⭐ Rating-Based Filtering
-- 📅 Release Year Filtering
-- 🎭 Genre-Based Filtering
-- 🔍 Smart Movie Search
-- 🌐 Interactive Streamlit Web Interface
+-  Movie Recommendation Engine
+-  Similarity Score Calculation
+-  Movie Poster Display
+-  Rating-Based Filtering
+-  Release Year Filtering
+-  Genre-Based Filtering
+-  Smart Movie Search
+-  Interactive Streamlit Web Interface
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - Python
 - Streamlit
@@ -32,7 +32,7 @@ The system analyzes movie metadata such as genres, keywords, cast, crew, and ove
 - Cosine Similarity
 - TMDB 5000 Dataset
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 Movie-Recommendation-System
@@ -77,7 +77,7 @@ Movie-Recommendation-System
 - Return top similar movies
 - Display posters and similarity scores
 
-## 📊 Machine Learning Concepts Used
+## Machine Learning Concepts Used
 
 - Natural Language Processing (NLP)
 - TF-IDF Vectorization
@@ -85,7 +85,7 @@ Movie-Recommendation-System
 - Content-Based Filtering
 - Feature Engineering
 
-## 📸 Application Preview
+## Application Preview
 
 ### Home Page
 - Movie Search
@@ -98,7 +98,7 @@ Movie-Recommendation-System
 - Movie Posters
 - Movie Description
 
-## ▶️ Run Locally
+## Run Locally
 
 ### Clone Repository
 
@@ -124,7 +124,7 @@ pip install -r requirements.txt
 streamlit run amit.py
 ```
 
-## 🎯 Future Enhancements
+## Future Enhancements
 
 - Deep Learning-Based Recommendations
 - User Authentication
@@ -133,14 +133,14 @@ streamlit run amit.py
 - Hybrid Recommendation System
 - Personalized User Recommendations
 
-## 👨‍💻 Author
+##  Author
 
 **Amit Dhotre**
 
-🎓 Computer Engineering Student  
-📊 Data Science & AI/ML Enthusiast  
-🐍 Python Developer  
-☁️ Cloud Computing Learner
+ Computer Engineering Student  
+ Data Science & AI/ML Enthusiast  
+ Python Developer  
+ Cloud Computing Learner
 
 ### Connect With Me
 
